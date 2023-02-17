@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: clown_user
+      POSTGRES_PASSWORD: clown_password
+      POSTGRES_DB: clown_db
+    ports:
+      - "54355:5432"
+  authentication_service:
+    build:
+      context: .
+      dockerfile: ./authentication_service/Dockerfile
+    ports:
+      - "5001:5000"
+    environment:
+      FLASK_APP: ./authentication_service/app.py
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    restart: unless-stopped
+  client_service:
+    build:
+      context: .
+      dockerfile: ./client_service/Dockerfile
+    ports:
+      - "5002:5000"
+    environment:
+      FLASK_APP: ./client_service/app.py
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+  clown_service:
+    build:
+      context: .
+      dockerfile: ./clown_service/Dockerfile
+    ports:
+      - "5003:5000"
+    environment:
+      FLASK_APP: ./clown_service/app.py
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+  troupe_leader_service:
+    build:
+      context: .
+      dockerfile: ./troupe_leader_service/Dockerfile
+    ports:
+      - "5004:5000"
+    environment:
+      FLASK_APP: ./troupe_leader_service/app.py
+    depends_on:
+    - db
+    volumes:
+      - .:/app

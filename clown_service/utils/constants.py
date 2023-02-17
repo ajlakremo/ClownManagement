@@ -1,0 +1,1 @@
+CLOWN_ROLE = 'Clown'
