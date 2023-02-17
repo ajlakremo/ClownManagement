@@ -75,6 +75,8 @@ def get_client_appointments(client_id):
 @clown.route('api/clown/appointment/<appointment_id>', methods=['PUT'])
 def rate_appointment(appointment_id):
     score = request.json.get('score')
+    if not Appointment.query.filter(Appointment.id == appointment_id).first():
+        return jsonify({'message': 'Appointment does not exist'}), 400
 
     appointment = Appointment.query.filter(Appointment.id == appointment_id).first()
     appointment.score = score
